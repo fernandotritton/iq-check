@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  testSessions TestSession[]
+}
+
+model TestSession {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  
+  // Demographics
+  age       Int?
+  education String?
+  gender    String?
+  
+  // Session data
+  startedAt DateTime @default(now())
+  completedAt DateTime?
+  
+  // Payment
+  hasPaid   Boolean  @default(false)
+  paidAt    DateTime?
+  amount    Float?
+  currency  String?
+  
+  answers   Answer[]
+  result    Result?
+  
+  @@index([userId])
+}
+
+model Question {
+  id         Int      @id @default(autoincrement())
+  type       String   // 'numeric_sequence', 'verbal_analogy', 'math', 'logic', 'numeric_matrix', 'geometric'
+  category   String   // 'logica', 'memoria_visual', 'reconocimiento_patrones'
+  difficulty Int      // 1-10
+  
+  // Question content (JSON)
+  content    Json
+  
+  // Answer options (JSON array)
+  options    Json
+  
+  // Correct answer index
+  correctAnswer Int
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  answers    Answer[]
+  
+  @@index([type])
+  @@index([category])
+  @@index([difficulty])
+}
+
+model Answer {
+  id            String      @id @default(cuid())
+  sessionId     String
+  session       TestSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  questionId    Int
+  question      Question    @relation(fields: [questionId], references: [id])
+  
+  selectedOption Int
+  timeTakenMs   Int
+  isCorrect     Boolean
+  
+  answeredAt    DateTime    @default(now())
+  
+  @@index([sessionId])
+  @@index([questionId])
+}
+
+model Result {
+  id          String      @id @default(cuid())
+  sessionId   String      @unique
+  session     TestSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  // IQ Score
+  iq          Int
+  percentile  Int
+  classification String
+  description String
+  
+  // Category breakdown (JSON)
+  categoryBreakdown Json
+  
+  // Metadata
+  totalQuestions Int
+  correctAnswers Int
+  averageTime    Float
+  
+  calculatedAt DateTime @default(now())
+  
+  @@index([sessionId])
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  sessionId     String
+  
+  // Payment details
+  amount        Float
+  currency      String
+  status        String   // 'pending', 'completed', 'failed', 'refunded'
+  paymentMethod String   // 'stripe', 'mercadopago', 'paypal', etc.
+  
+  // External IDs
+  externalId    String?  @unique
+  
+  // Metadata
+  metadata      Json?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@index([sessionId])
+  @@index([status])
+}
