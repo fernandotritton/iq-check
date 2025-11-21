@@ -19,9 +19,9 @@ export async function POST(request: Request) {
         // Validate input
         const validation = testSubmissionSchema.safeParse(body);
         if (!validation.success) {
-            console.error('Validation failed:', validation.error.errors);
+            console.error('Validation failed:', validation.error.issues);
             return NextResponse.json(
-                { success: false, error: validation.error.errors },
+                { success: false, error: validation.error.issues },
                 { status: 400 }
             );
         }

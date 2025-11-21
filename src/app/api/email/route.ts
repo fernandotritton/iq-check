@@ -9,7 +9,7 @@ export async function POST(request: Request) {
         const validation = emailCaptureSchema.safeParse(body);
         if (!validation.success) {
             return NextResponse.json(
-                { success: false, error: validation.error.errors },
+                { success: false, error: validation.error.issues },
                 { status: 400 }
             );
         }
