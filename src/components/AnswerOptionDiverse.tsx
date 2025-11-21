@@ -190,11 +190,11 @@ export const AnswerOptionDiverse: React.FC<AnswerOptionDiverseProps> = ({ questi
 
     // Opciones incorrectas para patrones geométricos
     const wrongOptions = [
-        <circle cx="50" cy="50" r="20" fill="#F59E0B" />,
-        <circle cx="50" cy="50" r="35" fill="#F59E0B" />,
-        <circle cx="50" cy="50" r="30" fill="#2563EB" />,
-        <circle cx="50" cy="50" r="30" fill="#10B981" />,
-        <rect x="20" y="20" width="60" height="60" fill="#F59E0B" />,
+        <circle key="1" cx="50" cy="50" r="20" fill="#F59E0B" />,
+        <circle key="2" cx="50" cy="50" r="35" fill="#F59E0B" />,
+        <circle key="3" cx="50" cy="50" r="30" fill="#2563EB" />,
+        <circle key="4" cx="50" cy="50" r="30" fill="#10B981" />,
+        <rect key="5" x="20" y="20" width="60" height="60" fill="#F59E0B" />,
     ];
 
     return (

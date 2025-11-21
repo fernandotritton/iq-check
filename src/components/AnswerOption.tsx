@@ -25,11 +25,11 @@ export const AnswerOption: React.FC<AnswerOptionProps> = ({ questionNumber, opti
 
         // Opciones incorrectas
         const wrongOptions = [
-            <circle cx="50" cy="50" r="20" fill="#F59E0B" />, // Muy pequeño
-            <circle cx="50" cy="50" r="35" fill="#F59E0B" />, // Muy grande
-            <circle cx="50" cy="50" r="30" fill="#2563EB" />, // Color incorrecto
-            <circle cx="50" cy="50" r="30" fill="#10B981" />, // Color incorrecto
-            <rect x="20" y="20" width="60" height="60" fill="#F59E0B" />, // Forma incorrecta
+            <circle key="1" cx="50" cy="50" r="20" fill="#F59E0B" />, // Muy pequeño
+            <circle key="2" cx="50" cy="50" r="35" fill="#F59E0B" />, // Muy grande
+            <circle key="3" cx="50" cy="50" r="30" fill="#2563EB" />, // Color incorrecto
+            <circle key="4" cx="50" cy="50" r="30" fill="#10B981" />, // Color incorrecto
+            <rect key="5" x="20" y="20" width="60" height="60" fill="#F59E0B" />, // Forma incorrecta
         ];
 
         return (
@@ -52,11 +52,11 @@ export const AnswerOption: React.FC<AnswerOptionProps> = ({ questionNumber, opti
         }
 
         const wrongOptions = [
-            <circle cx="50" cy="50" r="25" fill="none" stroke="#F59E0B" strokeWidth="3" />,
-            <circle cx="50" cy="50" r="25" fill="none" stroke="#2563EB" strokeWidth="3" strokeDasharray="8,4" />,
-            <rect x="25" y="25" width="50" height="50" fill="none" stroke="#F59E0B" strokeWidth="3" strokeDasharray="8,4" />,
-            <polygon points="50,20 80,80 20,80" fill="none" stroke="#F59E0B" strokeWidth="3" strokeDasharray="8,4" />,
-            <circle cx="50" cy="50" r="25" fill="#F59E0B" opacity="0.3" />,
+            <circle key="1" cx="50" cy="50" r="25" fill="none" stroke="#F59E0B" strokeWidth="3" />,
+            <circle key="2" cx="50" cy="50" r="25" fill="none" stroke="#2563EB" strokeWidth="3" strokeDasharray="8,4" />,
+            <rect key="3" x="25" y="25" width="50" height="50" fill="none" stroke="#F59E0B" strokeWidth="3" strokeDasharray="8,4" />,
+            <polygon key="4" points="50,20 80,80 20,80" fill="none" stroke="#F59E0B" strokeWidth="3" strokeDasharray="8,4" />,
+            <circle key="5" cx="50" cy="50" r="25" fill="#F59E0B" opacity="0.3" />,
         ];
 
         return (
@@ -80,28 +80,28 @@ export const AnswerOption: React.FC<AnswerOptionProps> = ({ questionNumber, opti
     }
 
     const wrongOptions = [
-        <>
+        <React.Fragment key="1">
             <circle cx="50" cy="50" r="20" fill="none" stroke="#2563EB" strokeWidth="2" />
             <rect x="30" y="30" width="40" height="40" fill="none" stroke="#10B981" strokeWidth="2" />
-        </>,
-        <>
+        </React.Fragment>,
+        <React.Fragment key="2">
             <circle cx="50" cy="50" r="20" fill="none" stroke="#F59E0B" strokeWidth="2" />
             <rect x="30" y="30" width="40" height="40" fill="none" stroke="#10B981" strokeWidth="2" />
             <polygon points="50,25 70,75 30,75" fill="#2563EB" opacity="0.5" />
-        </>,
-        <>
+        </React.Fragment>,
+        <React.Fragment key="3">
             <circle cx="50" cy="50" r="25" fill="none" stroke="#2563EB" strokeWidth="2" />
             <rect x="25" y="25" width="50" height="50" fill="none" stroke="#10B981" strokeWidth="2" />
             <polygon points="50,25 70,75 30,75" fill="#F59E0B" opacity="0.5" />
-        </>,
-        <>
+        </React.Fragment>,
+        <React.Fragment key="4">
             <circle cx="50" cy="50" r="20" fill="none" stroke="#2563EB" strokeWidth="2" />
             <polygon points="50,25 70,75 30,75" fill="#F59E0B" opacity="0.5" />
-        </>,
-        <>
+        </React.Fragment>,
+        <React.Fragment key="5">
             <rect x="30" y="30" width="40" height="40" fill="none" stroke="#10B981" strokeWidth="2" />
             <polygon points="50,25 70,75 30,75" fill="#F59E0B" opacity="0.5" />
-        </>,
+        </React.Fragment>,
     ];
 
     return (
