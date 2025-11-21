@@ -86,145 +86,159 @@ export default function ResultsPage() {
 
         Object.entries(result.categoryBreakdown).forEach(([key, value]) => {
             const label = categories[key as keyof typeof categories] || key;
-            doc.text(`${label}: ${value}%`, 30, y);
+            y += 10;
+        });
+
+        // Footer
+        doc.setFontSize(10);
+        doc.setTextColor(150);
+        doc.text("Este documento certifica los resultados obtenidos en la prueba IQCheck.", 105, 280, { align: "center" });
+
+        doc.save("IQCheck_Certificado.pdf");
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-center">
                     <div className="text-6xl mb-4">⏳</div>
                     <p className="text-xl text-gray-600">Cargando tus resultados...</p>
-                </div >
-            </div >
-        );
-}
-
-if (!result) {
-    return (
-        <div className="min-h-screen bg-background flex items-center justify-center">
-            <div className="text-center">
-                <div className="text-6xl mb-4">❌</div>
-                <p className="text-xl text-gray-600">No se encontraron resultados</p>
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    }
 
-const radarData = [
-    { category: 'Lógica', value: Math.max(10, result.categoryBreakdown.logica || 50) },
-    { category: 'Memoria', value: Math.max(10, result.categoryBreakdown.memoria || 50) },
-    { category: 'Patrones', value: Math.max(10, result.categoryBreakdown.patrones || 50) },
-    { category: 'Velocidad', value: Math.max(10, result.categoryBreakdown.velocidad || 50) },
-];
+    if (!result) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-center">
+                    <div className="text-6xl mb-4">❌</div>
+                    <p className="text-xl text-gray-600">No se encontraron resultados</p>
+                </div>
+            </div>
+        );
+    }
 
-return (
-    <div className="min-h-screen bg-background py-12 px-4">
-        <div className="max-w-4xl mx-auto">
-            {/* Success Animation */}
-            <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring', duration: 0.6 }}
-                className="text-center mb-8"
-            >
-                <div className="text-8xl mb-4">🎉</div>
-                <h1 className="text-4xl font-bold text-primary mb-2">
-                    ¡Felicitaciones!
-                </h1>
-                <p className="text-xl text-gray-600">
-                    Tu análisis completo está listo
-                </p>
-            </motion.div>
+    const radarData = [
+        { category: 'Lógica', value: Math.max(10, result.categoryBreakdown.logica || 50) },
+        { category: 'Memoria', value: Math.max(10, result.categoryBreakdown.memoria || 50) },
+        { category: 'Patrones', value: Math.max(10, result.categoryBreakdown.patrones || 50) },
+        { category: 'Velocidad', value: Math.max(10, result.categoryBreakdown.velocidad || 50) },
+    ];
 
-            {/* IQ Score Card */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-gradient-to-br from-primary to-primary-light text-white rounded-2xl p-12 mb-8 text-center shadow-2xl"
-            >
-                <p className="text-xl mb-4 opacity-90">Tu Coeficiente Intelectual</p>
+    return (
+        <div className="min-h-screen bg-background py-12 px-4">
+            <div className="max-w-4xl mx-auto">
+                {/* Success Animation */}
                 <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ delay: 0.4, type: 'spring' }}
-                    className="text-9xl font-bold mb-4"
+                    transition={{ type: 'spring', duration: 0.6 }}
+                    className="text-center mb-8"
                 >
-                    {result.iq}
-                </motion.div>
-                <p className="text-3xl font-semibold mb-2">{result.classification}</p>
-                <p className="text-lg opacity-90">{result.description}</p>
-
-                <div className="mt-8 bg-white/20 rounded-lg p-4">
-                    <p className="text-sm mb-2">Percentil</p>
-                    <p className="text-2xl font-bold">
-                        Superior al {result.percentile}% de la población
+                    <div className="text-8xl mb-4">🎉</div>
+                    <h1 className="text-4xl font-bold text-primary mb-2">
+                        ¡Felicitaciones!
+                    </h1>
+                    <p className="text-xl text-gray-600">
+                        Tu análisis completo está listo
                     </p>
-                </div>
-            </motion.div>
+                </motion.div>
 
-            {/* Radar Chart */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-white rounded-2xl shadow-lg p-8 mb-8"
-            >
-                <h2 className="text-2xl font-bold text-primary mb-6 text-center">
-                    Desglose por Categorías Cognitivas
-                </h2>
-
-                <ResponsiveContainer width="100%" height={400}>
-                    <RadarChart data={radarData}>
-                        <PolarGrid stroke="#e5e7eb" />
-                        <PolarAngleAxis dataKey="category" tick={{ fill: '#6b7280', fontSize: 14 }} />
-                        <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#9ca3af' }} />
-                        <Radar
-                            name="Tu Perfil"
-                            dataKey="value"
-                            stroke="#2563EB"
-                            fill="#2563EB"
-                            fillOpacity={0.6}
-                        />
-                    </RadarChart>
-                </ResponsiveContainer>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-                    {Object.entries(result.categoryBreakdown).map(([key, value]) => (
-                        <div key={key} className="text-center">
-                            <div className="text-3xl font-bold text-primary">{value}%</div>
-                            <div className="text-sm text-gray-600 capitalize">{key}</div>
-                        </div>
-                    ))}
-                </div>
-            </motion.div>
-
-            {/* Actions */}
-            <div className="grid md:grid-cols-2 gap-4">
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleDownloadPDF}
-                    className="py-4 bg-secondary text-white font-semibold rounded-lg shadow-lg flex items-center justify-center gap-2"
+                {/* IQ Score Card */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="bg-gradient-to-br from-primary to-primary-light text-white rounded-2xl p-12 mb-8 text-center shadow-2xl"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Descargar Certificado PDF
-                </motion.button>
+                    <p className="text-xl mb-4 opacity-90">Tu Coeficiente Intelectual</p>
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.4, type: 'spring' }}
+                        className="text-9xl font-bold mb-4"
+                    >
+                        {result.iq}
+                    </motion.div>
+                    <p className="text-3xl font-semibold mb-2">{result.classification}</p>
+                    <p className="text-lg opacity-90">{result.description}</p>
 
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="py-4 bg-primary text-white font-semibold rounded-lg shadow-lg flex items-center justify-center gap-2"
+                    <div className="mt-8 bg-white/20 rounded-lg p-4">
+                        <p className="text-sm mb-2">Percentil</p>
+                        <p className="text-2xl font-bold">
+                            Superior al {result.percentile}% de la población
+                        </p>
+                    </div>
+                </motion.div>
+
+                {/* Radar Chart */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="bg-white rounded-2xl shadow-lg p-8 mb-8"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                    </svg>
-                    Compartir Resultado
-                </motion.button>
+                    <h2 className="text-2xl font-bold text-primary mb-6 text-center">
+                        Desglose por Categorías Cognitivas
+                    </h2>
+
+                    <ResponsiveContainer width="100%" height={400}>
+                        <RadarChart data={radarData}>
+                            <PolarGrid stroke="#e5e7eb" />
+                            <PolarAngleAxis dataKey="category" tick={{ fill: '#6b7280', fontSize: 14 }} />
+                            <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#9ca3af' }} />
+                            <Radar
+                                name="Tu Perfil"
+                                dataKey="value"
+                                stroke="#2563EB"
+                                fill="#2563EB"
+                                fillOpacity={0.6}
+                            />
+                        </RadarChart>
+                    </ResponsiveContainer>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                        {Object.entries(result.categoryBreakdown).map(([key, value]) => (
+                            <div key={key} className="text-center">
+                                <div className="text-3xl font-bold text-primary">{value}%</div>
+                                <div className="text-sm text-gray-600 capitalize">{key}</div>
+                            </div>
+                        ))}
+                    </div>
+                </motion.div>
+
+                {/* Actions */}
+                <div className="grid md:grid-cols-2 gap-4">
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={handleDownloadPDF}
+                        className="py-4 bg-secondary text-white font-semibold rounded-lg shadow-lg flex items-center justify-center gap-2"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Descargar Certificado PDF
+                    </motion.button>
+
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="py-4 bg-primary text-white font-semibold rounded-lg shadow-lg flex items-center justify-center gap-2"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                        </svg>
+                        Compartir Resultado
+                    </motion.button>
+                </div>
+
+                {/* Footer */}
+                <p className="text-center text-gray-500 text-sm mt-8">
+                    Gracias por confiar en IQCheck. Tu certificado ha sido enviado a tu email.
+                </p>
             </div>
-
-            {/* Footer */}
-            <p className="text-center text-gray-500 text-sm mt-8">
-                Gracias por confiar en IQCheck. Tu certificado ha sido enviado a tu email.
-            </p>
         </div>
-    </div>
-);
+    );
 }
