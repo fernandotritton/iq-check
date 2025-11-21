@@ -3,9 +3,10 @@ import { supabase } from '@/lib/supabase';
 
 export async function GET(
     request: Request,
-    { params }: { params: { sessionId: string } }
+    props: { params: Promise<{ sessionId: string }> }
 ) {
     try {
+        const params = await props.params;
         const sessionId = params.sessionId;
 
         // 1. Get Session Status
