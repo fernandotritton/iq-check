@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 
 import { jsPDF } from 'jspdf';
 
-export default function ResultsPage() {
+function ResultsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [result, setResult] = useState<any>(null);
@@ -263,5 +263,20 @@ export default function ResultsPage() {
                 </p>
             </div>
         </div>
+    );
+}
+
+export default function ResultsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-center">
+                    <div className="text-6xl mb-4">⏳</div>
+                    <p className="text-xl text-gray-600">Cargando resultados...</p>
+                </div>
+            </div>
+        }>
+            <ResultsContent />
+        </Suspense>
     );
 }
