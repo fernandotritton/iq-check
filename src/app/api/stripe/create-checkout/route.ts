@@ -3,9 +3,10 @@ import Stripe from 'stripe';
 
 export async function POST(request: Request) {
     try {
-        // Initialize Stripe inside the function to avoid build-time errors
-        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-            apiVersion: '2024-11-20.acacia',
+        // Hardcoded for immediate fix - test key only
+        const stripeKey = 'sk_test_51STcPSDdeEmV7Ahs8qFfXLZrNUj8uXTgcrGzMeahCt3owOzvSlgsA7bWXsT8Ss7xSuiUcuJ0AlmJiYuJbDFoMIfm00NeMztjYv';
+        const stripe = new Stripe(stripeKey, {
+            apiVersion: '2025-11-17.clover',
         });
 
         const { sessionId } = await request.json();
