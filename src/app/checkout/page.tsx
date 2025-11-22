@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 
 export default function CheckoutPage() {
     const router = useRouter();
-    const [paymentMethod, setPaymentMethod] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('stripe');
+    const [loading, setLoading] = useState(false);
 
     const handlePayment = async () => {
         const sessionId = localStorage.getItem('test_session_id');
@@ -15,33 +16,30 @@ export default function CheckoutPage() {
             return;
         }
 
-        try {
-            // Simulate payment processing delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+        setLoading(true);
 
-            // Confirm payment to backend
-            const response = await fetch('/api/payment/confirm', {
+        try {
+            // Create Stripe checkout session
+            const response = await fetch('/api/stripe/create-checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    sessionId,
-                    paymentMethod,
-                    amount: 9.99, // In a real app, this comes from the selected price
-                    currency: 'USD'
-                })
+                body: JSON.stringify({ sessionId })
             });
 
             const data = await response.json();
 
-            if (data.success) {
-                router.push('/results');
+            if (data.success && data.checkoutUrl) {
+                // Redirect to Stripe checkout
+                window.location.href = data.checkoutUrl;
             } else {
-                console.error('Payment failed:', data.error);
-                alert('Error procesando el pago. Intenta de nuevo.');
+                console.error('Checkout creation failed:', data.error);
+                alert('Error creando sesión de pago. Intenta de nuevo.');
+                setLoading(false);
             }
         } catch (error) {
             console.error('Payment error:', error);
             alert('Error de conexión.');
+            setLoading(false);
         }
     };
 
@@ -102,26 +100,26 @@ export default function CheckoutPage() {
                     <div className="bg-gray-50 rounded-lg p-6 mb-6">
                         <h3 className="font-semibold text-gray-700 mb-4">Resumen del pedido</h3>
                         <div className="flex justify-between mb-2">
-                            <span className="text-gray-600">Reporte Personal de CI</span>
-                            <span className="font-semibold">Bs. 258.00</span>
+                            <span className="text-gray-600">Informe Completo de CI</span>
+                            <span className="font-semibold">$4.99 USD</span>
                         </div>
                         <div className="border-t pt-2 mt-2">
                             <div className="flex justify-between text-lg font-bold">
                                 <span>Total</span>
-                                <span className="text-secondary">Bs. 258.00</span>
+                                <span className="text-secondary">$4.99 USD</span>
                             </div>
                         </div>
                     </div>
 
                     {/* CTA */}
                     <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ scale: loading ? 1 : 1.02 }}
+                        whileTap={{ scale: loading ? 1 : 0.98 }}
                         onClick={handlePayment}
-                        disabled={!paymentMethod}
+                        disabled={loading}
                         className="w-full py-4 bg-secondary text-white font-bold rounded-lg shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Completar Pago
+                        {loading ? 'Redirigiendo a pago seguro...' : 'Proceder al Pago'}
                     </motion.button>
 
                     <p className="text-xs text-gray-400 text-center mt-4">

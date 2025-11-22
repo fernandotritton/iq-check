@@ -2,17 +2,26 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 
 import { jsPDF } from 'jspdf';
 
 export default function ResultsPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [result, setResult] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
 
     useEffect(() => {
+        // Check if coming from successful payment
+        if (searchParams.get('payment_success') === 'true') {
+            setPaymentSuccess(true);
+            // Clear the URL param after 5 seconds
+            setTimeout(() => setPaymentSuccess(false), 5000);
+        }
+
         async function fetchResults() {
             try {
                 const sessionId = localStorage.getItem('test_session_id');
@@ -40,7 +49,7 @@ export default function ResultsPage() {
         }
 
         fetchResults();
-    }, [router]);
+    }, [router, searchParams]);
 
     const handleDownloadPDF = () => {
         if (!result) return;
@@ -129,6 +138,20 @@ export default function ResultsPage() {
     return (
         <div className="min-h-screen bg-background py-12 px-4">
             <div className="max-w-4xl mx-auto">
+                {/* Payment Success Banner */}
+                {paymentSuccess && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="bg-green-50 border-2 border-green-500 rounded-lg p-4 mb-6 text-center"
+                    >
+                        <div className="text-green-600 font-semibold text-lg">
+                            ✅ ¡Pago confirmado! Gracias por tu compra.
+                        </div>
+                    </motion.div>
+                )}
+
                 {/* Success Animation */}
                 <motion.div
                     initial={{ scale: 0 }}
