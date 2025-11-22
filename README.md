@@ -1,4 +1,4 @@
-# NeuroIQ - Plataforma de Test de IQ
+# IQCheck - Plataforma de Test de IQ
 
 Plataforma de test de coeficiente intelectual optimizada para el mercado hispano con modelo Freemium.
 
