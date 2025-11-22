@@ -201,7 +201,7 @@ export default function ResultsPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                         {Object.entries(result.categoryBreakdown).map(([key, value]) => (
                             <div key={key} className="text-center">
-                                <div className="text-3xl font-bold text-primary">{value}%</div>
+                                <div className="text-3xl font-bold text-primary">{value as number}%</div>
                                 <div className="text-sm text-gray-600 capitalize">{key}</div>
                             </div>
                         ))}
