@@ -23,10 +23,10 @@ export async function POST() {
             sessionId
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating session:', error);
         return NextResponse.json(
-            { success: false, error: 'Failed to create session' },
+            { success: false, error: error?.message || 'Failed to create session', details: String(error) },
             { status: 500 }
         );
     }

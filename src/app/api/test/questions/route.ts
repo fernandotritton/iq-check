@@ -23,10 +23,10 @@ export async function GET() {
             questions
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error fetching questions:', error);
         return NextResponse.json(
-            { success: false, error: 'Failed to fetch questions' },
+            { success: false, error: error?.message || 'Failed to fetch questions', details: String(error) },
             { status: 500 }
         );
     }
