@@ -33,7 +33,7 @@ export default function CheckoutPage() {
                 window.location.href = data.checkoutUrl;
             } else {
                 console.error('Checkout creation failed:', data.error);
-                alert('Error creando sesión de pago. Intenta de nuevo.');
+                alert(`Error: ${data.error || 'No se pudo iniciar el pago'}`);
                 setLoading(false);
             }
         } catch (error) {
