@@ -45,13 +45,13 @@ export default function ResultsPreviewPage() {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
 
-    // Precios por país (PPP)
+    // Precios reales
     const pricing = {
-        VE: { currency: 'Bs.', price: '258.00', original: '1,705.89', flag: '🇻🇪' },
-        MX: { currency: '$', price: '99.00', original: '299.00', flag: '🇲🇽' },
-        CO: { currency: '$', price: '19,900', original: '49,900', flag: '🇨🇴' },
-        ES: { currency: '€', price: '9.99', original: '29.99', flag: '🇪🇸' },
-        US: { currency: '$', price: '9.99', original: '29.99', flag: '🇺🇸' },
+        VE: { currency: '$', price: '1.49', original: '4.99', flag: '🇻🇪' },
+        MX: { currency: '$', price: '4.99', original: '9.99', flag: '🇲🇽' },
+        CO: { currency: '$', price: '4.99', original: '9.99', flag: '🇨🇴' },
+        ES: { currency: '$', price: '4.99', original: '9.99', flag: '🇪🇸' },
+        US: { currency: '$', price: '4.99', original: '9.99', flag: '🇺🇸' },
     };
 
     const currentPrice = pricing[country as keyof typeof pricing] || pricing.US;
