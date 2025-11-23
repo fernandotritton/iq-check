@@ -18,6 +18,12 @@ export default function CheckoutPage() {
 
         setLoading(true);
 
+        // If crypto payment, redirect to crypto payment page
+        if (paymentMethod === 'crypto') {
+            router.push(`/checkout/crypto?session_id=${sessionId}`);
+            return;
+        }
+
         try {
             // Create Stripe checkout session
             const response = await fetch('/api/stripe/create-checkout', {
@@ -57,42 +63,50 @@ export default function CheckoutPage() {
 
                     {/* Payment Methods */}
                     <div className="space-y-4 mb-8">
+                        {/* Stripe Card Payment */}
                         <motion.button
                             whileHover={{ scale: 1.02 }}
-                            onClick={() => setPaymentMethod('paypal')}
-                            className={`w-full p-4 border-2 rounded-lg flex items-center justify-center gap-3 transition-all ${paymentMethod === 'paypal' ? 'border-primary-light bg-blue-50' : 'border-gray-200'
+                            onClick={() => setPaymentMethod('stripe')}
+                            className={`w-full p-4 border-2 rounded-lg flex items-center justify-between transition-all ${paymentMethod === 'stripe' ? 'border-secondary bg-green-50' : 'border-gray-200'
                                 }`}
                         >
-                            <div className="w-12 h-12 bg-blue-500 rounded flex items-center justify-center text-white font-bold">
-                                PP
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 bg-secondary rounded flex items-center justify-center">
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-semibold">Tarjeta de Crédito/Débito</div>
+                                    <div className="text-sm text-gray-500">Stripe - Internacional</div>
+                                </div>
                             </div>
-                            <span className="font-semibold">PayPal</span>
+                            <div className="text-right">
+                                <div className="font-bold text-lg">$4.99</div>
+                                <div className="text-xs text-gray-500">USD</div>
+                            </div>
                         </motion.button>
 
+                        {/* Crypto Payment (Venezuela) */}
                         <motion.button
                             whileHover={{ scale: 1.02 }}
-                            onClick={() => setPaymentMethod('gpay')}
-                            className={`w-full p-4 border-2 rounded-lg flex items-center justify-center gap-3 transition-all ${paymentMethod === 'gpay' ? 'border-primary-light bg-blue-50' : 'border-gray-200'
+                            onClick={() => setPaymentMethod('crypto')}
+                            className={`w-full p-4 border-2 rounded-lg flex items-center justify-between transition-all ${paymentMethod === 'crypto' ? 'border-secondary bg-green-50' : 'border-gray-200'
                                 }`}
                         >
-                            <div className="w-12 h-12 bg-black rounded flex items-center justify-center text-white font-bold">
-                                G
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded flex items-center justify-center text-white font-bold">
+                                    ₮
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-semibold">USDT (TRC20)</div>
+                                    <div className="text-sm text-gray-500">Binance - Venezuela 🇻🇪</div>
+                                </div>
                             </div>
-                            <span className="font-semibold">Google Pay</span>
-                        </motion.button>
-
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            onClick={() => setPaymentMethod('card')}
-                            className={`w-full p-4 border-2 rounded-lg flex items-center justify-center gap-3 transition-all ${paymentMethod === 'card' ? 'border-primary-light bg-blue-50' : 'border-gray-200'
-                                }`}
-                        >
-                            <div className="w-12 h-12 bg-secondary rounded flex items-center justify-center">
-                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                </svg>
+                            <div className="text-right">
+                                <div className="font-bold text-lg">$1.49</div>
+                                <div className="text-xs text-gray-500">USD</div>
                             </div>
-                            <span className="font-semibold">Tarjeta de crédito o débito</span>
                         </motion.button>
                     </div>
 
@@ -101,12 +115,18 @@ export default function CheckoutPage() {
                         <h3 className="font-semibold text-gray-700 mb-4">Resumen del pedido</h3>
                         <div className="flex justify-between mb-2">
                             <span className="text-gray-600">Informe Completo de CI</span>
-                            <span className="font-semibold">$4.99 USD</span>
+                            <span className="font-semibold">{paymentMethod === 'crypto' ? '$1.49' : '$4.99'} USD</span>
                         </div>
+                        {paymentMethod === 'crypto' && (
+                            <div className="flex justify-between mb-2 text-sm text-green-600">
+                                <span>Descuento Venezuela 🇻🇪</span>
+                                <span>-$3.50</span>
+                            </div>
+                        )}
                         <div className="border-t pt-2 mt-2">
                             <div className="flex justify-between text-lg font-bold">
                                 <span>Total</span>
-                                <span className="text-secondary">$4.99 USD</span>
+                                <span className="text-secondary">{paymentMethod === 'crypto' ? '$1.49' : '$4.99'} USD</span>
                             </div>
                         </div>
                     </div>
