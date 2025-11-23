@@ -4,8 +4,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
-
-import { jsPDF } from 'jspdf';
+import { generateIQCertificatePDF } from '@/lib/pdfGenerator';
 
 function ResultsContent() {
     const router = useRouter();
@@ -53,57 +52,7 @@ function ResultsContent() {
 
     const handleDownloadPDF = () => {
         if (!result) return;
-
-        const doc = new jsPDF();
-
-        // Header
-        doc.setFontSize(22);
-        doc.setTextColor(40, 40, 40);
-        doc.text("Certificado de Coeficiente Intelectual", 105, 40, { align: "center" });
-
-        doc.setFontSize(16);
-        doc.text("IQCheck Platform", 105, 50, { align: "center" });
-
-        doc.setLineWidth(0.5);
-        doc.line(20, 60, 190, 60);
-
-        doc.setFontSize(14);
-        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 20, 80);
-
-        // Main Score
-        doc.setFontSize(24);
-        doc.setTextColor(37, 99, 235); // Primary Blue
-        doc.text(`IQ: ${result.iq}`, 105, 90, { align: "center" });
-
-        doc.setFontSize(18);
-        doc.setTextColor(40, 40, 40);
-        doc.text(`${result.classification}`, 105, 105, { align: "center" });
-
-        doc.setFontSize(14);
-        doc.text(`Percentil: Superior al ${result.percentile}%`, 105, 115, { align: "center" });
-
-        // Breakdown
-        doc.text("Desglose de Habilidades:", 20, 140);
-        let y = 150;
-
-        const categories = {
-            logica: "Lógica Matemática",
-            memoria: "Memoria Visual",
-            patrones: "Reconocimiento de Patrones",
-            velocidad: "Velocidad de Procesamiento"
-        };
-
-        Object.entries(result.categoryBreakdown).forEach(([key, value]) => {
-            const label = categories[key as keyof typeof categories] || key;
-            y += 10;
-        });
-
-        // Footer
-        doc.setFontSize(10);
-        doc.setTextColor(150);
-        doc.text("Este documento certifica los resultados obtenidos en la prueba IQCheck.", 105, 280, { align: "center" });
-
-        doc.save("IQCheck_Certificado.pdf");
+        generateIQCertificatePDF(result);
     };
 
     if (loading) {

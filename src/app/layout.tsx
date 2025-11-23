@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import "./globals.css";
 
 const inter = Inter({
@@ -29,6 +30,10 @@ export default function RootLayout({
                 className={`${inter.variable} ${montserrat.variable} font-sans antialiased bg-background`}
                 suppressHydrationWarning
             >
+                {/* Google Analytics - Replace with your actual GA4 Measurement ID */}
+                {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+                    <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+                )}
                 {children}
             </body>
         </html>
