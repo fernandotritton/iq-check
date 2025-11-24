@@ -55,6 +55,38 @@ function ResultsContent() {
         generateIQCertificatePDF(result);
     };
 
+    const handleShare = () => {
+        if (!result) return;
+
+        const text = `¡Acabo de descubrir mi IQ: ${result.iq}! 🧠✨\n\nClasificación: ${result.classification}\nPercentil: Superior al ${result.percentile}% de la población 🎯\n\nDescubre tu potencial cognitivo en IQCheck:`;
+        const url = 'https://iq-check-umdy.vercel.app';
+
+        // Check if Web Share API is available (mobile)
+        if (navigator.share) {
+            navigator.share({
+                title: `Mi Resultado IQCheck: ${result.iq}`,
+                text: text,
+                url: url
+            }).catch((error) => console.log('Error sharing:', error));
+        } else {
+            // Fallback: Copy to clipboard and show modal with share options
+            const shareText = `${text}\n${url}`;
+            navigator.clipboard.writeText(shareText);
+
+            // Show options to share
+            const shareOptions = [
+                { name: 'Twitter', url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}` },
+                { name: 'Facebook', url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}` },
+                { name: 'WhatsApp', url: `https://wa.me/?text=${encodeURIComponent(shareText)}` },
+                { name: 'LinkedIn', url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}` }
+            ];
+
+            // Open first share option  (Twitter) in new tab
+            window.open(shareOptions[0].url, '_blank');
+            alert('✅ Texto copiado al portapapeles!\n\nSe abrió Twitter para compartir. También puedes pegar en otras redes.');
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
@@ -197,6 +229,7 @@ function ResultsContent() {
                     <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
+                        onClick={handleShare}
                         className="py-4 bg-primary text-white font-semibold rounded-lg shadow-lg flex items-center justify-center gap-2"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

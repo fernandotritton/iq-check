@@ -1,3 +1,5 @@
+import { jsPDF } from 'jspdf';
+
 // Improved PDF generation with professional design
 export function generateIQCertificatePDF(result: any) {
     const doc = new jsPDF();
