@@ -21,7 +21,7 @@ export default function AdminPage() {
     const [loading, setLoading] = useState(false);
 
     // Simple password check (in production, use proper authentication)
-    const ADMIN_PASSWORD = 'iqcheck2024'; // Cambia esto por tu password
+    const ADMIN_PASSWORD = 'Colinas85'; // Cambia esto por tu password
 
     const handleLogin = () => {
         if (password === ADMIN_PASSWORD) {
